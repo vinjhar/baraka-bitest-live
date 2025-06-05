@@ -47,15 +47,23 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     flowType: 'pkce'
   },
   global: {
-    fetch: async (url, options) => {
+    headers: {
+      'X-Client-Info': 'supabase-js/2.39.7'
+    },
+    fetch: async (url, options = {}) => {
       let retries = 0;
       while (retries < MAX_RETRIES) {
         try {
-          return await fetch(url, {
+          const response = await fetch(url, {
             ...options,
-            // Ensure credentials are included
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+              ...options.headers,
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache'
+            }
           });
+          return response;
         } catch (error) {
           retries++;
           if (retries === MAX_RETRIES) throw error;
