@@ -1,16 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Validate environment variables
-if (!supabaseUrl) {
-  throw new Error('VITE_SUPABASE_URL is not defined in environment variables');
-}
-
-if (!supabaseAnonKey) {
-  throw new Error('VITE_SUPABASE_ANON_KEY is not defined in environment variables');
-}
+const supabaseUrl = "https://yhxmewmcodmfmdpiyyxa.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InloeG1ld21jb2RtZm1kcGl5eXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc1NzA4OTQsImV4cCI6MjA2MzE0Njg5NH0.JnfPuI0c1TE8iEYixTlokoMEdiD3qTQYiTZS9h4kJ2Y";
 
 // Validate URL format
 try {
