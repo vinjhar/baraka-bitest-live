@@ -83,7 +83,6 @@ export async function createCheckoutSession(priceId: string, mode: 'payment' | '
         throw new Error('Too many requests. Please try again in a few minutes.');
       } else if (response.status === 500) {
         // Handle specific 500 error cases
-        console.log("error type", responseData.error)
         if (responseData.error?.includes('subscription')) {
           throw new Error('Unable to initialize subscription. Please try again or contact support.');
         } else if (responseData.error?.includes('customer')) {
