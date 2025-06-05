@@ -34,6 +34,10 @@ const getStorage = () => {
   }
 };
 
+// Add retries for failed requests
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
@@ -41,5 +45,24 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     storage: getStorage(),
     flowType: 'pkce'
+  },
+  global: {
+    fetch: async (url, options) => {
+      let retries = 0;
+      while (retries < MAX_RETRIES) {
+        try {
+          return await fetch(url, {
+            ...options,
+            // Ensure credentials are included
+            credentials: 'include'
+          });
+        } catch (error) {
+          retries++;
+          if (retries === MAX_RETRIES) throw error;
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * retries));
+        }
+      }
+      throw new Error('Failed to fetch after maximum retries');
+    }
   }
 });
