@@ -52,9 +52,15 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     },
     fetch: async (url, options = {}) => {
       let retries = 0;
+      
+      // Convert HTTPS to HTTP for localhost during development
+      const finalUrl = process.env.NODE_ENV === 'development' && url.startsWith('https://localhost') 
+        ? url.replace('https://', 'http://')
+        : url;
+
       while (retries < MAX_RETRIES) {
         try {
-          const response = await fetch(url, {
+          const response = await fetch(finalUrl, {
             ...options,
             credentials: 'include',
             headers: {
@@ -63,6 +69,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
               'Pragma': 'no-cache'
             }
           });
+          
+          // Check if the response is ok
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
           return response;
         } catch (error) {
           retries++;
